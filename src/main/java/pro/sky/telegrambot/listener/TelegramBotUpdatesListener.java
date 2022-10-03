@@ -58,6 +58,9 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                     message = message.trim();
                     LocalDateTime localDateTime = LocalDateTime.parse(date, DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"));
                     createNotificationTask(chatId, message, localDateTime);
+                } else {
+                    message = "Ошибка формата сообщения. Сообщение должно быть формата \"01.01.2022 20:00 Сделать домашнюю работу\".";
+                    sendMessage(chatId, message);
                 }
             }
         });
@@ -74,6 +77,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         if (!messageToSend.isEmpty()) {
             for (NotificationTask task : messageToSend) {
                 sendMessage(task.getChat_id(), task.getMessage());
+                repository.delete(task);
             }
         }
     }
